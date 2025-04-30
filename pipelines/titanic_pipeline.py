@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 from prefect import task, flow
 import pandas as pd
-import numpy as np
 from pathlib import Path
-import os
 
 
 @task(name="Load Titanic data", log_prints=True)
