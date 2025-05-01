@@ -2,7 +2,7 @@
 FROM python:3.13-alpine AS builder
 
 # Install build deps
-RUN apk add --no-cache gcc g++ musl-dev
+RUN apk add --no-cache gcc g++ musl-dev linux-headers
 
 WORKDIR /build
 
@@ -15,19 +15,32 @@ FROM python:3.13-alpine
 # Copy deps from builder
 COPY --from=builder /install /usr/local
 
-WORKDIR /code
+WORKDIR /app
 
 # Configure prefect
 RUN prefect config set PREFECT_API_URL=http://127.0.0.1:4200/api
 
-# Expose port for prefect API
-EXPOSE 4200
+# Expose port for prefect API and health check server
+EXPOSE 4200 8080
 
 # Flush output immediately
 ENV PYTHONUNBUFFERED=1
 
-# Copy source code
-COPY pipelines .
+# Set log level
+ENV LOG_LEVEL=INFO
 
-# Run it!
-CMD ["sh"]
+# Install monitoring deps
+RUN apk add --no-cache curl
+
+# Create a healthcheck
+HEALTHCHECK --interval=30s --timeout=5s --start-period= --retries=3 \
+    CMD curl -f http://localhost:8080/health/liveness || exit 1
+
+# Copy source code
+COPY src/ /app/
+COPY scripts/ /app/scripts/
+RUN chmod +x /app/scripts/entrypoint.sh
+
+# Default command
+ENTRYPOINT ["/app/scripts/entrypoint.sh"]
+CMD ["prefect", "server", "start"]
