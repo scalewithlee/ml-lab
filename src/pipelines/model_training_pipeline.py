@@ -89,9 +89,7 @@ def save_processed_data(df: pd.DataFrame, output_path: str) -> None:
 
 
 @task(name="Split data")
-def split_data(
-    df: pd.DataFrame, target_column: str = "Pclass", test_size: float = 0.3
-):
+def split_data(df: pd.DataFrame, target_column: str = "Pclass", test_size: float = 0.3):
     """
     Split data into training and testing sets.
 
@@ -166,10 +164,7 @@ def evaluate_model(model, X_test, y_test):
 
     # Show some example predictions
     print("Sample predictions:")
-    results_df = pd.DataFrame({
-        'Actual': y_test.values,
-        'Predicted': y_pred
-    })
+    results_df = pd.DataFrame({"Actual": y_test.values, "Predicted": y_pred})
     print(results_df.head(10))
 
     return {"accuracy": accuracy, "report": report}
