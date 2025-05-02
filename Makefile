@@ -1,5 +1,6 @@
 fmt:
 	@black .
+	@terraform fmt -recursive
 
 build:
 	docker build --tag ml-lab .
