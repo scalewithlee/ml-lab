@@ -1,0 +1,62 @@
+name: "Terraform Validation"
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "infra/**"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "infra/**"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.4.6
+
+      - name: Terraform Format
+        run: |
+          cd infra/gcp
+          terraform fmt -check -recursive
+
+      - name: Terraform Init
+        run: |
+          cd infra/gcp/environments/dev
+          terraform init -backend=false
+
+      - name: Terraform Validate
+        run: |
+          cd infra/gcp/environments/dev
+          terraform validate
+
+      - name: Run tfsec
+        uses: aquasecurity/tfsec@v1.0.0
+        with:
+          working_directory: infra/gcp
+
+      - name: Run Infracost
+        uses: infracost/actions/setup@v2
+        with:
+          api-key: ${{ secrets.INFRACOST_API_KEY }}
+        if: github.event_name == 'pull_request'
+
+      - name: Generate Infracost estimate
+        run: |
+          cd infra/gcp/environments/dev
+          infracost breakdown --path . --format json --out-file /tmp/infracost.json
+        if: github.event_name == 'pull_request'
+
+      - name: Post Infracost comment
+        uses: infracost/actions/comment@v2
+        with:
+          file: /tmp/infracost.json
+        if: github.event_name == 'pull_request'

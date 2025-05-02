@@ -1,5 +1,10 @@
-variable "environment" {
+variable "region" {
   type        = string
-  description = "The environment to deploy to"
-  default     = "dev"
+  description = "The region to deploy to"
+}
+
+variable "project_id" {
+  type        = string
+  description = "The GCP project ID"
+  default     = "us-central1"
 }

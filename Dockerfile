@@ -19,6 +19,7 @@ WORKDIR /app
 
 # Configure prefect
 RUN prefect config set PREFECT_API_URL=http://127.0.0.1:4200/api
+RUN prefect config set PREFECT_SERVER_API_HOST=0.0.0.0
 
 # Expose port for prefect API and health check server
 EXPOSE 4200 8080
