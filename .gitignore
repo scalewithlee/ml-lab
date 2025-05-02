@@ -4,3 +4,5 @@ pipelines/data/
 pipelines/models/
 __pycache__
 *.pyc
+bootstrap/
+**/.terraform*

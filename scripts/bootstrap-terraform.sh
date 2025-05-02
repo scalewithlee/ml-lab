@@ -17,7 +17,7 @@ REGION="us-central1"
 BUCKET_NAME="${PROJECT_ID}-terraform-state"
 
 # Check if environment directory exists
-ENV_DIR="../infra/gcp/environments/${ENVIRONMENT}"
+ENV_DIR="infra/gcp/environments/${ENVIRONMENT}"
 if [ ! -d "$ENV_DIR" ]; then
   echo "=== Environment directory does not exist: $ENV_DIR ==="
   exit 1
@@ -61,6 +61,7 @@ terraform apply
 STATE_BUCKET=$(terraform output -raw state_bucket_name)
 echo "======== State bucket created: $STATE_BUCKET ========"
 
+cd ..
 cd "${ENV_DIR}"
 
 # Update the backend config
