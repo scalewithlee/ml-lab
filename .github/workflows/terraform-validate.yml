@@ -44,7 +44,7 @@ jobs:
           working_directory: infra/gcp
 
       - name: Run Infracost
-        uses: infracost/actions/setup@v2
+        uses: infracost/actions/setup@v3
         with:
           api-key: ${{ secrets.INFRACOST_API_KEY }}
         if: github.event_name == 'pull_request'
@@ -56,7 +56,7 @@ jobs:
         if: github.event_name == 'pull_request'
 
       - name: Post Infracost comment
-        uses: infracost/actions/comment@v2
+        uses: infracost/actions/comment@v3
         with:
           file: /tmp/infracost.json
         if: github.event_name == 'pull_request'
