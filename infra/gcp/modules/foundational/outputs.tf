@@ -1,11 +1,11 @@
 output "network_id" {
   description = "The ID of the VPC network"
-  value       = google_compute_network.vpc_network.id
+  value       = google_compute_network.ml_network.id
 }
 
 output "network_name" {
   description = "The name of the VPC network"
-  value       = google_compute_network.vpc_network.name
+  value       = google_compute_network.ml_network.name
 }
 
 output "subnet_id" {
@@ -20,5 +20,5 @@ output "subnet_name" {
 
 output "terraform_state_bucket" {
   description = "The name of the Terraform state bucket"
-  value       = google_storage_bucket.terraform_state_bucket.name
+  value       = google_storage_bucket.terraform_state.name
 }
