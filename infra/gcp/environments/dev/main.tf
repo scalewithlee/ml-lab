@@ -4,3 +4,9 @@ module "foundational" {
   region      = var.region
   environment = "dev"
 }
+
+module "security" {
+  source      = "../../modules/security"
+  project_id  = var.project_id
+  environment = "dev"
+}
