@@ -1,3 +1,5 @@
 # ml-lab
 
-A sandbox repo to explore ML/AI infra, tooling, and concepts.
+This repo contains machine learning pipelines and the infrastructure to run it on Kubernetes in Google Cloud.
+
+
