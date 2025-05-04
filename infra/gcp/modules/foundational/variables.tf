@@ -1,3 +1,14 @@
+variable "gcp_services" {
+  type        = list(string)
+  description = "GCP services that are required (to enable the APIs)"
+  default = [
+    "artifactregistry.googleapis.com",
+    "container.googleapis.com",
+    "iam.googleapis.com",
+    "secretmanager.googleapis.com",
+  ]
+}
+
 variable "project_id" {
   type        = string
   description = "The ID of the GCP project"

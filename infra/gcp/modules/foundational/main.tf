@@ -8,19 +8,17 @@ provider "google" {
   region  = var.region
 }
 
-# Remote state bucket
-resource "google_storage_bucket" "terraform_state" {
-  name          = "${var.project_id}-terraform-state"
-  location      = var.region
-  force_destroy = false
+# Enable required APIs, it not already enabled
+resource "google_project_service" "gcp_services" {
+  for_each           = toset(var.gcp_services)
+  project            = var.project_id
+  service            = each.key
+  disable_on_destroy = false
 
-  # Enable versioning
-  versioning {
-    enabled = true
+  # Ensure services are created before other resources
+  lifecycle {
+    ignore_changes = []
   }
-
-  # Server-side encryption
-  uniform_bucket_level_access = true
 }
 
 # VPC network for ML infra
