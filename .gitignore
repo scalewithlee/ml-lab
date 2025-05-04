@@ -6,4 +6,3 @@ __pycache__
 *.pyc
 bootstrap/
 **/.terraform*
-**/terraform.tfvars.json
