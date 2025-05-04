@@ -14,7 +14,8 @@ on:
 jobs:
   terraform-dev:
     runs-on: ubuntu-latest
-    environment: dev
+    environment:
+      name: dev
 
     steps:
       - uses: actions/checkout@v4
@@ -41,7 +42,10 @@ jobs:
 
   terraform-prd:
     runs-on: ubuntu-latest
-    environment: prod # GitHub environment, not the directory name. This adds a manual approval gate.
+    environment:
+      name: prod # GitHub environment, not the directory name. This adds a manual approval gate.
+      url: ${{ steps.deploy.outputs.url }}
+    needs: [terraform-dev]
 
     steps:
       - uses: actions/checkout@v4
