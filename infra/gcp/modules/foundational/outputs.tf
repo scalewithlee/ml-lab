@@ -17,8 +17,3 @@ output "subnet_name" {
   description = "The name of the GKE subnet"
   value       = google_compute_subnetwork.gke_subnet.name
 }
-
-output "terraform_state_bucket" {
-  description = "The name of the Terraform state bucket"
-  value       = google_storage_bucket.terraform_state.name
-}
