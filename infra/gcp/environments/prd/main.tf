@@ -27,6 +27,6 @@ module "ml_infra" {
   # Customize GKE cluster
   node_count        = 2
   node_machine_type = "e2-standard-4"
-  node_disk_size_gb = 100
+  node_disk_size_gb = 50
   node_zones        = ["${var.region}-a", "${var.region}-b"]
 }
