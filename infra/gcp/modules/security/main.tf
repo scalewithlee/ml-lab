@@ -84,5 +84,5 @@ resource "google_project_iam_member" "ci_cd_sa_roles" {
 
   project = var.project_id
   role    = each.key
-  member  = "serviceaccount:${google_service_account.ci_cd_service_account.email}"
+  member  = "serviceAccount:${google_service_account.ci_cd_service_account.email}"
 }

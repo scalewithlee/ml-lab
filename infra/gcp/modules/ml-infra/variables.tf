@@ -41,6 +41,11 @@ variable "master_authorized_networks" {
   }]
 }
 
+variable "cluster_version" {
+  type        = string
+  description = "GKE version for node pool"
+  default     = "1.32.2-gke.1182003"
+}
 variable "master_ipv4_cidr_block" {
   type        = string
   description = "The CIDR block for the GKE master"

@@ -62,6 +62,7 @@ resource "google_container_cluster" "ml_cluster" {
 # Node pool for ML workloads
 resource "google_container_node_pool" "ml_nodes" {
   name       = "${var.environment}-ml-node-pool"
+  version    = var.cluster_version
   cluster    = google_container_cluster.ml_cluster.id
   node_count = var.node_count
 
@@ -86,6 +87,11 @@ resource "google_container_node_pool" "ml_nodes" {
     # Enable workload identity
     workload_metadata_config {
       mode = "GKE_METADATA"
+    }
+
+    # Add kubelet_config to avoid terraform apply modification errors
+    kubelet_config {
+      cpu_manager_policy = "static"
     }
 
     # Apply resource labels to nodes
