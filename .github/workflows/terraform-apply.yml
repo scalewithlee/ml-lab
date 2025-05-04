@@ -35,7 +35,9 @@ jobs:
 
       - name: Terraform Apply
         working-directory: ./infra/gcp/environments/dev
-        run: terraform apply -auto-approve
+        run: |
+          terraform apply -refresh-only -auto-approve
+          terraform apply -auto-approve
 
   terraform-prd:
     runs-on: ubuntu-latest
@@ -55,4 +57,6 @@ jobs:
 
       - name: Terraform Apply
         working-directory: ./infra/gcp/environments/prd
-        run: terraform apply -auto-approve
+        run: |
+          terraform apply -refresh-only -auto-approve
+          terraform apply -auto-approve
