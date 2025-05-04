@@ -71,6 +71,12 @@ resource "google_container_node_pool" "ml_nodes" {
     auto_upgrade = true
   }
 
+  lifecycle {
+    ignore_changes = [
+      node_config[0].resource_labels["goog-gke-node-pool-provisioning-model"]
+    ]
+  }
+
   node_config {
     machine_type = var.node_machine_type
 
