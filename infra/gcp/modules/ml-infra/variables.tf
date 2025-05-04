@@ -44,7 +44,7 @@ variable "master_authorized_networks" {
 variable "master_ipv4_cidr_block" {
   type        = string
   description = "The CIDR block for the GKE master"
-  default     = "172.16.0.0/18"
+  default     = "172.16.0.0/28"
 }
 
 variable "node_count" {

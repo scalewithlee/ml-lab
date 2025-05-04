@@ -15,6 +15,9 @@ on:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment: [dev, prd]
     steps:
       - uses: actions/checkout@v4
 
@@ -30,12 +33,12 @@ jobs:
 
       - name: Terraform Init
         run: |
-          cd infra/gcp/environments/dev
+          cd infra/gcp/environments/${{ matrix.environment }}
           terraform init -backend=false
 
       - name: Terraform Validate
         run: |
-          cd infra/gcp/environments/dev
+          cd infra/gcp/environments/${{ matrix.environment }}
           terraform validate
 
       - name: Run tfsec
@@ -51,15 +54,16 @@ jobs:
 
       - name: Generate Infracost estimate
         run: |
-          cd infra/gcp/environments/dev
-          infracost breakdown --path . --format json --out-file /tmp/infracost.json
+          cd infra/gcp/environments/${{ matrix.environment }}
+          infracost breakdown --path . --format json --out-file /tmp/infracost-${{ matrix.environment }}.json
         if: github.event_name == 'pull_request'
 
       - name: Post Infracost comment
         run: |
-          infracost comment github --path=/tmp/infracost.json \
+          infracost comment github --path=/tmp/infracost-${{ matrix.environment }}.json \
             --repo=$GITHUB_REPOSITORY \
             --github-token=${{ github.token }} \
             --pull-request=${{ github.event.pull_request.number }} \
-            --behavior=update
+            --behavior=update \
+            --tag=${{ matrix.environment }}
         if: github.event_name == 'pull_request'
