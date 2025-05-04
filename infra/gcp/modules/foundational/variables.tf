@@ -2,7 +2,7 @@ variable "gcp_services" {
   type        = list(string)
   description = "GCP services that are required (to enable the APIs)"
   default = [
-    "cloudresourcemanager.googleapis.com",
+    "cloudresourcemanager.googleapis.com", # Might have to add this one manually
     "artifactregistry.googleapis.com",
     "container.googleapis.com",
     "iam.googleapis.com",
