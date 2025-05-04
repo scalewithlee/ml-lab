@@ -65,3 +65,24 @@ resource "google_secret_manager_secret_iam_member" "ml_sa_secret_access" {
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:${google_service_account.ml_service_account.email}"
 }
+
+# CI/CD service account for GitHub Actions
+resource "google_service_account" "ci_cd_service_account" {
+  account_id   = "${var.environment}-ci-cd-sa"
+  display_name = "CI/CD service account for ${var.environment}"
+  description  = "Service account for CI/CD (GitHub Actions)"
+}
+
+# IAM binding for CI/CD service account
+resource "google_project_iam_member" "ci_cd_sa_roles" {
+  for_each = toset([
+    "roles/artifactregistry.writer", # Push containers
+    "roles/container.developer",     # GKE deployments
+    "roles/storage.objectViewer",    # Read data if needed
+    "roles/logging.logWriter"        # Write logs
+  ])
+
+  project = var.project_id
+  role    = each.key
+  member  = "serviceaccount:${google_service_account.ci_cd_service_account.email}"
+}

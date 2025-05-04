@@ -1,0 +1,23 @@
+name: "Build and Push Containers"
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - TODO
+  pull_request:
+    branches:
+      - main
+    paths:
+      - TODO
+
+jobs:
+  build:
+    runs-on: ubuntu:latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Build the Image
+        run: |
+          docker
