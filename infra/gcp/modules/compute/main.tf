@@ -23,6 +23,21 @@ resource "google_container_cluster" "ml_cluster" {
   network         = var.network_id
   subnetwork      = var.subnet_id
 
+  # Enable network policies
+  network_policy {
+    enabled  = true
+    provider = "CALICO"
+  }
+
+  # Enable security posture API
+  security_posture_config {
+    mode = "BASIC"
+  }
+
+  binary_authorization {
+    evaluation_mode = "PROJECT_SINGLETON_POLICY_ENFORCE"
+  }
+
   ip_allocation_policy {
     cluster_secondary_range_name  = "pod-range"
     services_secondary_range_name = "service-range"
@@ -68,6 +83,7 @@ resource "google_container_node_pool" "ml_nodes" {
 
   node_config {
     machine_type = var.node_machine_type
+    image_type   = "COS_CONTAINERD"
 
     # Specify proper disk size for ML workflows
     disk_size_gb = var.node_disk_size_gb
@@ -93,6 +109,12 @@ resource "google_container_node_pool" "ml_nodes" {
     labels = {
       environment = var.environment
       role        = "ml-workload"
+    }
+
+    resource_labels = {
+      environment = var.environment
+      managed_by  = "terraform"
+      project     = var.project_id
     }
 
     # Apply resource tags to nodes
