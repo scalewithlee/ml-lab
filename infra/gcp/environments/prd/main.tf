@@ -1,5 +1,5 @@
-module "foundational" {
-  source      = "../../modules/foundational"
+module "foundation" {
+  source      = "../../modules/foundation"
   project_id  = var.project_id
   region      = var.region
   environment = "prd"
@@ -17,9 +17,9 @@ module "ml_infra" {
   region      = var.region
   environment = "prd"
 
-  # Pass outputs from foundational module
-  network_id = module.foundational.network_id
-  subnet_id  = module.foundational.subnet_id
+  # Pass outputs from foundation module
+  network_id = module.foundation.network_id
+  subnet_id  = module.foundation.subnet_id
 
   # Pass outputs from security module
   gke_service_account_email = module.security.gke_service_account_email

@@ -50,7 +50,6 @@ resource "google_secret_manager_secret" "ml_api_key" {
   replication {
     auto {}
   }
-
 }
 
 # Initial version of secret (empty - will be filled manually)
