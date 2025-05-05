@@ -31,14 +31,13 @@ jobs:
           cd infra/gcp
           terraform fmt -check -recursive
 
-      - name: Terraform Init
+      - name: Terraform Init and Validate
         run: |
-          cd infra/gcp/environments/${{ matrix.environment }}
+          cd infra/gcp/environments/${{ matrix.environment }}/foundation
           terraform init -backend=false
-
-      - name: Terraform Validate
-        run: |
-          cd infra/gcp/environments/${{ matrix.environment }}
+          terraform validate
+          cd ../compute
+          terraform init -backend=false
           terraform validate
 
       - name: Run tfsec
