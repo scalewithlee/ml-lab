@@ -1,9 +1,10 @@
+# environments/dev/foundation/terraform.tf
 terraform {
   required_version = ">= 1.0.0"
 
   backend "gcs" {
-    # This will be filled in with `terraform init -backend-config="bucket=your-bucket"
-    # The bucket must already exist before terraform init
+    # Configuration will come from backend.conf
+    # through terraform init -backend-config
   }
 
   required_providers {
