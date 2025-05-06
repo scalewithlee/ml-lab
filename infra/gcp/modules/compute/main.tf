@@ -11,6 +11,11 @@ resource "google_container_cluster" "ml_cluster" {
   # and immediately delete it.
   remove_default_node_pool = true
   initial_node_count       = 1
+  resource_labels = {
+    environment = var.environment
+    managed_by  = "terraform"
+    project     = var.project_id
+  }
 
   # Enable workload identity for GKE.
   # This allows Kubernetes service accounts to act as user-managed Google IAM Service Accounts
@@ -32,6 +37,10 @@ resource "google_container_cluster" "ml_cluster" {
   # Enable security posture API
   security_posture_config {
     mode = "BASIC"
+  }
+
+  pod_security_policy_config {
+    enabled = true
   }
 
   binary_authorization {
@@ -82,6 +91,7 @@ resource "google_container_node_pool" "ml_nodes" {
   }
 
   node_config {
+    preemptible  = true # Save some money, maybe
     machine_type = var.node_machine_type
     image_type   = "COS_CONTAINERD"
 
@@ -111,10 +121,8 @@ resource "google_container_node_pool" "ml_nodes" {
       role        = "ml-workload"
     }
 
-    resource_labels = {
-      environment = var.environment
-      managed_by  = "terraform"
-      project     = var.project_id
+    metadata = {
+      disable-legacy-endpoints = "true"
     }
 
     # Apply resource tags to nodes
