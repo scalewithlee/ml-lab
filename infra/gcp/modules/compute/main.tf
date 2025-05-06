@@ -39,10 +39,6 @@ resource "google_container_cluster" "ml_cluster" {
     mode = "BASIC"
   }
 
-  pod_security_policy_config {
-    enabled = true
-  }
-
   binary_authorization {
     evaluation_mode = "PROJECT_SINGLETON_POLICY_ENFORCE"
   }
