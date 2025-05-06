@@ -6,11 +6,13 @@ variable "project_id" {
 variable "region" {
   type        = string
   description = "The GCP region"
+  default     = "us-central1"
 }
 
 variable "environment" {
   type        = string
   description = "The environment name"
+  default     = "dev"
 }
 
 variable "node_zones" {

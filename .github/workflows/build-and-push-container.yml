@@ -5,19 +5,60 @@ on:
     branches:
       - main
     paths:
-      - TODO
+      - "src/**"
+      - "Dockerfile"
   pull_request:
     branches:
       - main
     paths:
-      - TODO
+      - "src/**"
+      - "Dockerfile"
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy to"
+        required: true
+        type: choice
+        options:
+          - dev
+          - prd
+        default: "dev"
+
+env:
+  PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+  REGION: ${{ vars.REGION }}
 
 jobs:
   build:
-    runs-on: ubuntu:latest
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'dev' }}
+
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Build the Image
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_CI_CD_SA_KEY }}
+
+      - name: Configure Docker
+        run: gcloud auth configure-docker ${{ env.REGION}}-docker.pkg.dev
+
+      - name: Set Environment Variables
         run: |
-          docker
+          echo "ENVIRONMENT=${{ github.event.inputs.environment || 'dev' }}" >> $GITHUB_ENV
+
+      - name: Set Registry Name
+        run: echo "REGISTRY_NAME=${{ env.ENVIRONMENT }}-ml-containers" >> $GITHUB_ENV
+
+      - name: Build and Push
+        run: |
+          IMAGE_TAG=${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REGISTRY_NAME }}/ml-app:${{ github.sha }}
+          echo "Building and pushing to $IMAGE_TAG"
+          docker build -t $IMAGE_TAG .
+          docker push $IMAGE_TAG
+
+          # Also add "latest" tag for convenience
+          LATEST_TAG=${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REGISTRY_NAME }}/ml-app:latest
+          docker tag $IMAGE_TAG $LATEST_TAG
+          docker push $LATEST_TAG

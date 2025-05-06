@@ -1,4 +1,4 @@
-// The foundational module contains things like cloud storage and networking.
+// The foundation module contains things like cloud storage and networking.
 // Put things here that probably don't change very often.
 // This module should be able to be used by things other than ML infra
 
@@ -37,6 +37,13 @@ resource "google_compute_subnetwork" "gke_subnet" {
 
   # Enable private access to google APIs (e.g. for pulling images)
   private_ip_google_access = true
+
+  # Enable VPC flow logs
+  log_config {
+    aggregation_interval = "INTERVAL_5_MIN"
+    flow_sampling        = 0.5
+    metadata             = "INCLUDE_ALL_METADATA"
+  }
 
   # Secondary IP ranges for pods and services
   secondary_ip_range {

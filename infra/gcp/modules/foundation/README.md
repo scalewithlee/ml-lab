@@ -11,7 +11,7 @@ This module provides foundational resources for ML infrastructure on GCP.
 
 ```hcl
 module "foundation" {
-  source = "../modules/foundational"
+  source = "../modules/foundation"
 
   project_id  = "your-gcp-project-id"
   environment = "dev"

@@ -30,20 +30,22 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_BOOTSTRAP_SA_KEY }}
 
-      - name: Terraform Init
-        working-directory: ./infra/gcp/environments/dev
-        run: terraform init -backend-config=backend.conf
-
-      - name: Terraform Apply
-        working-directory: ./infra/gcp/environments/dev
+      - name: Apply Foundation
+        working-directory: ./infra/gcp/environments/dev/foundation
         run: |
-          terraform apply -refresh-only -auto-approve
+          terraform init -backend-config=backend.conf
+          terraform apply -auto-approve
+
+      - name: Apply Compute
+        working-directory: ./infra/gcp/environments/dev/compute
+        run: |
+          terraform init -backend-config=backend.conf
           terraform apply -auto-approve
 
   terraform-prd:
     runs-on: ubuntu-latest
     environment:
-      name: prod # GitHub environment, not the directory name. This adds a manual approval gate.
+      name: prd # GitHub environment. This adds a manual approval gate.
       url: ${{ steps.deploy.outputs.url }}
     needs: [terraform-dev]
 
@@ -60,12 +62,16 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_BOOTSTRAP_SA_KEY }}
 
-      - name: Terraform Init
-        working-directory: ./infra/gcp/environments/prd
-        run: terraform init -backend-config=backend.conf
-
-      - name: Terraform Apply
-        working-directory: ./infra/gcp/environments/prd
+      - name: Apply Foundation
+        working-directory: ./infra/gcp/environments/prd/foundation
         run: |
+          terraform init -backend-config=backend.conf
+          terraform apply -refresh-only -auto-approve
+          terraform apply -auto-approve
+
+      - name: Apply Compute
+        working-directory: ./infra/gcp/environments/prd/compute
+        run: |
+          terraform init -backend-config=backend.conf
           terraform apply -refresh-only -auto-approve
           terraform apply -auto-approve
